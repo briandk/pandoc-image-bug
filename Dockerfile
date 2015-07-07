@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     wget
 
 # install pandoc
-RUN cabal update && cabal install --global pandoc-1.15
+RUN cabal update && cabal install --global pandoc-1.15.0.4
 
 # example command: docker run danielak/pandoc --version
 WORKDIR /src
