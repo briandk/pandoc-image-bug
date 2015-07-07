@@ -21,15 +21,15 @@ RUN apt-get update && apt-get install -y \
 
 # install pandoc
 RUN cabal update && cabal install --global pandoc-1.15
-ENV PATH /root/.cabal/bin:$PATH
 
 # example command: docker run danielak/pandoc --version
 WORKDIR /src
-CMD [
-    "pandoc",
-    "test.md",
-    "--from=markdown",
-    "--to=latex",
-    "--output=test.pdf",
-    "--standalone"
+COPY . /src
+CMD [ \
+    "pandoc", \
+    "test.md", \
+    "--from=markdown", \
+    "--to=latex", \
+    "--output=test.pdf", \
+    "--standalone" \
 ]
