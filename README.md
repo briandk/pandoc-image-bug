@@ -46,8 +46,9 @@ Running my docker image produces the following output:
 	2. Mac OS X: <http://docs.docker.com/mac/step_one/>
 	3. Windows: <http://docs.docker.com/windows/step_one/>
 2. If you're on Windows or Mac, start Boot2docker. If you're on Linux, skip this step.
-3. At the terminal, type
+3. **Make sure you have root access** or the windows equivalent, because [Docker requires root access](https://docs.docker.com/articles/security/#docker-daemon-attack-surface). Then, at the terminal, type
 
+		# make sure you have root access when you execute this:
 		docker run danielak/pandoc-image-bug
 
 4. Confirm that you receive this output:
@@ -63,3 +64,12 @@ Running my docker image produces the following output:
         l.75 ...ort/images/tiny/CLASS\%20Plot\%20GPER.png}
 
         pandoc: Error producing PDF from TeX source
+        
+ ### What to do if you want to access the Docker container itself
+ 
+Right now if you run my image, it executes one pandoc command and then quits. You might be wondering, "what if I want to poke around your docker image and try commands for myself?" No problem. Below is a command that will allow you shell access to my docker image. From there, you can try pandoc commands yourself. I haven't tested this on Windows, but it should work on *nix-like systems (Ubuntu and Mac OS X, among others).
+
+```bash
+# Make sure you run this with root access
+docker run -i -t --entrypoint /bin/bash danielak/pandoc-image-bug
+```
