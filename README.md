@@ -73,3 +73,45 @@ Right now if you run my image, it executes one pandoc command and then quits. Yo
 # Make sure you run this with root access
 docker run -i -t --entrypoint /bin/bash danielak/pandoc-image-bug
 ```
+
+## My best guess at the cause of the bug
+
+I think what's happening is that there's security certificate issue with the host, `physport.org`. My guess is based on the following evidence of command results in the terminal:
+
+```bash
+# To make sure you have the latest image version
+$ docker run danielak/pandoc-image-bug:latest
+
+# Remember to run this with root-level access
+# It'll then drop you to shell access inside the container
+$ docker run -i -t --entrypoint /bin/bash danielak/pandoc-image-bug
+
+# In your prompt, the hash following @ might be different
+root@6ef180c258d1:/src# wget https://www.physport.org/physport/
+
+# Which produces this output
+images/tiny/CLASS%20Plot%20GPER.png
+--2015-07-07 04:04:35--  https://www.physport.org/physport/images/tiny/CLASS%20Plot%20GPER.png
+Resolving www.physport.org (www.physport.org)... 149.28.119.173
+Connecting to www.physport.org (www.physport.org)|149.28.119.173|:443... connected.
+ERROR: cannot verify www.physport.org's certificate, issued by '/C=GB/ST=Greater Manchester/L=Salford/O=COMODO CA Limited/CN=COMODO RSA Domain Validation Secure Server CA':
+  Unable to locally verify the issuer's authority.
+To connect to www.physport.org insecurely, use `--no-check-certificate'.
+
+# Trying again with the no-check-certificate option
+root@6ef180c258d1:/src# wget https://www.physport.org/physport/images/tiny/CLASS%20Plot%20GPER.png --no-check-certificate
+
+# The download works
+--2015-07-07 04:14:43--  https://www.physport.org/physport/images/tiny/CLASS%20Plot%20GPER.png
+Resolving www.physport.org (www.physport.org)... 149.28.119.173
+Connecting to www.physport.org (www.physport.org)|149.28.119.173|:443... connected.
+WARNING: cannot verify www.physport.org's certificate, issued by '/C=GB/ST=Greater Manchester/L=Salford/O=COMODO CA Limited/CN=COMODO RSA Domain Validation Secure Server CA':
+  Unable to locally verify the issuer's authority.
+HTTP request sent, awaiting response... 200 OK
+Length: 83194 (81K) [image/png]
+Saving to: 'CLASS Plot GPER.png'
+
+100%[===============================================================================================================================>] 83,194       480KB/s   in 0.2s
+```
+
+
