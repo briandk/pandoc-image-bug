@@ -6,7 +6,6 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf;
 
 # install Haskell, LaTeX, and Node
 RUN apt-get update && apt-get install -y \
-    ca-certificates \
     haskell-platform \
     libghc-pandoc-dev \
     lmodern \
@@ -21,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     wget
 
 # install pandoc
-RUN cabal update && cabal install --global pandoc-1.15
+RUN cabal update && cabal install --global pandoc-1.15.0.4
 
 # example command: docker run danielak/pandoc --version
 WORKDIR /src
